@@ -47,17 +47,15 @@ def _launch_worker(directory: Path, working_dir: Path) -> dict[str, Any]:
         # the worker outside the SSH process tree, under the calling account.
         from .worker import shell_arguments
 
+        # Avoid an inherited console without passing Win32_ProcessStartup flags:
+        # those optional flags are rejected by some Windows CIM providers.
+        pythonw = Path(sys.executable).with_name("pythonw.exe")
+        if pythonw.is_file():
+            arguments[0] = str(pythonw)
         command_line = subprocess.list2cmdline(arguments).replace("'", "''")
-        current_dir = str(working_dir).replace("'", "''")
         script = (
-            "$startup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly "
-            "-Property @{ShowWindow=[uint16]0; CreateFlags=[uint32]0x08000000}; "
             "$result = Invoke-CimMethod -ClassName Win32_Process -MethodName Create "
-            "-Arguments @{CommandLine='"
-            + command_line
-            + "'; CurrentDirectory='"
-            + current_dir
-            + "'; ProcessStartupInformation=$startup}; "
+            "-Arguments @{CommandLine='" + command_line + "'}; "
             "if ($result.ReturnValue -ne 0) { "
             "throw ('CIM launch failed: ' + $result.ReturnValue) }; "
             "$result.ProcessId"
