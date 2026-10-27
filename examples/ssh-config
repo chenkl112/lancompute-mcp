@@ -1,0 +1,11 @@
+# Add to ~/.ssh/config ON THE MACHINE RUNNING CODEX.
+# Replace HostName, User, and IdentityFile with your Windows connection details.
+Host lancompute-windows
+    HostName 192.168.1.100
+    User YOUR_WINDOWS_USER
+    IdentityFile ~/.ssh/id_ed25519
+    IdentitiesOnly yes
+    BatchMode yes
+    ConnectTimeout 10
+    ServerAliveInterval 30
+    ServerAliveCountMax 3

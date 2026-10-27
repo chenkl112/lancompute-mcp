@@ -1,0 +1,7 @@
+# Add to ~/.codex/config.toml ON THE MACHINE RUNNING CODEX.
+# The Windows installer generates a version with your actual paths.
+[mcp_servers.lancompute]
+command = "ssh"
+args = ["-T", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10", "lancompute-windows", 'cmd.exe /d /c "C:/lancompute-mcp/start-mcp.local.cmd"']
+startup_timeout_sec = 30
+tool_timeout_sec = 60
